@@ -8,11 +8,7 @@ const Toolbar = ({messages, checkAll, markRead, markNew, applyLabel, removeLabel
   }
   const addS = () => {
     const newArr = messages.filter(e => !e.read)
-    if (newArr.length > 1){
-      return 's'
-    }else{
-      return ''
-    }
+    return newArr.length > 1 ? 's' : ''
   }
 
   return (
