@@ -22,10 +22,11 @@ class App extends Component {
     })
   }
 
-  alterUnread = () => {
-    let newMessages = this.messages.slice(0)
+  alterUnread = (message) => {
+    let newMessages = this.state.messages.slice(0)
     return newMessages.map(e => {
-      console.log(e.read);
+      let displayNum = e.read
+      console.log(displayNum)
     })
   }
 

@@ -1,13 +1,26 @@
 import React from 'react'
 
-const Toolbar = ({messages, checkAll, markRead, markNew, applyLabel, removeLabel, deleteEmail, alterUnread}) => {
+const Toolbar = ({messages, checkAll, markRead, markNew, applyLabel, removeLabel, deleteEmail, message}) => {
+
+  const alterUnread = () => {
+    const newArr = messages.filter(e => !e.read)
+    return newArr.length
+  }
+  const addS = () => {
+    const newArr = messages.filter(e => !e.read)
+    if (newArr.length > 1){
+      return 's'
+    }else{
+      return ''
+    }
+  }
 
   return (
     <div className="row toolbar">
       <div className="col-md-12">
         <p className="pull-right">
-          {message.labels.map((e, index) => <span className="badge badge" key = {index}>{e}</span>)}
-          unread messages
+          <span className="badge badge">{`${alterUnread()}`}</span>
+          unread message{`${addS()}`}
         </p>
 
         <button className="btn btn-default" onClick ={(event) => {checkAll(event, messages, 'selected')}}>
