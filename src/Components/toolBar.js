@@ -1,6 +1,17 @@
 import React from 'react'
 
-const Toolbar = ({messages, checkAll, markRead, markNew, applyLabel, removeLabel, deleteEmail, message}) => {
+const Toolbar = ({
+  messages,
+  checkAll,
+  markRead,
+  markNew,
+  applyLabel,
+  removeLabel,
+  deleteEmail,
+  message,
+  response,
+  keepLabel
+}) => {
 
   const alterUnread = () => {
     const newArr = messages.filter(e => !e.read)
@@ -11,6 +22,7 @@ const Toolbar = ({messages, checkAll, markRead, markNew, applyLabel, removeLabel
     return newArr.length > 1 ? 's' : ''
   }
 
+
   return (
     <div className="row toolbar">
       <div className="col-md-12">
@@ -19,8 +31,12 @@ const Toolbar = ({messages, checkAll, markRead, markNew, applyLabel, removeLabel
           unread message{`${addS()}`}
         </p>
 
+        <a className="btn btn-danger">
+          <i className="fa fa-plus"></i>
+        </a>
+
         <button className="btn btn-default" onClick ={(event) => {checkAll(event, messages, 'selected')}}>
-          <i className="fa fa-check-square-o"  ></i>
+          <i className="fa fa-check-square-o"></i>
         </button>
 
         <button className="btn btn-default" onClick ={(event) => {markRead(event, messages, 'read')}}>
@@ -31,9 +47,9 @@ const Toolbar = ({messages, checkAll, markRead, markNew, applyLabel, removeLabel
           Mark As Unread
         </button>
 
-        <select className="form-control label-select" onChange ={(event) => {applyLabel(event.target.value)}}>
+        <select className="form-control label-select" onChange ={(event) => {keepLabel(messages, event)}}>
           <option selected="true" disabled="disabled">Apply label</option>
-          <option value="dev" >dev</option>
+          <option value="dev">dev</option>
           <option value="personal">personal</option>
           <option value="gschool">gschool</option>
         </select>
@@ -45,7 +61,9 @@ const Toolbar = ({messages, checkAll, markRead, markNew, applyLabel, removeLabel
           <option value="gschool">gschool</option>
         </select>
 
-        <button className="btn btn-default" onClick = {(event) => {deleteEmail(messages)}}>
+        <button className="btn btn-default" onClick= {(event) => {
+
+          deleteEmail(messages)}}>
           <i className="fa fa-trash-o"></i>
         </button>
       </div>
