@@ -3,12 +3,17 @@ import './App.css';
 import MessagesList from './Components/MessageList'
 import Toolbar from './Components/toolBar'
 import Navbar from './Components/navbar'
+import Compose from  './Components/Compose'
+let clicker = true
 
 class App extends Component {
   constructor(props){
     super(props)
     this.state = {
-      messages: []
+      messages: [],
+      visibility: 'none',
+      subjectContent: '',
+      messageContent: ''
     }
   }
 
@@ -42,11 +47,10 @@ class App extends Component {
     let newMessages = this.state.messages.slice(0)
     const goneMessage = newMessages.filter(e => !e.selected)
     const messageIds = newMessages.filter(e => e.selected).map(e => e.id)
-
-    const body = JSON.stringify({
+    const body = {
       messageIds,
       'command': "delete"
-    })
+    }
     this.response(body, 'PATCH')
     this.setState({messages: goneMessage})
   }
@@ -62,14 +66,13 @@ class App extends Component {
   }
 
   keepLabel = (messages, event) => {
-    console.log(this.state.messages)
     const body = {
       'messageIds': [],
       'command':  'addLabel',
       'label': ''
     }
     this.state.messages.map(e =>{
-      if(e.selected === true){
+      if(e.selected){
         body.messageIds.push(e.id)
         body.label = event.target.value
       }
@@ -89,18 +92,31 @@ class App extends Component {
     })
   }
 
-
+  noLabel = (messages, event) => {
+    const body = {
+      'messageIds': [],
+      'command': 'removeLabel',
+      'label': ''
+    }
+    this.state.messages.map(e => {
+      if (e.selected){
+        body.messageIds.push(e.id)
+        body.label = event.target.value
+      }
+    })
+    this.response(body, 'PATCH')
+    this.removeLabel(event.target.value)
+  }
 
   toggleClass = (message, nameOfClass) => {
-    // console.log(nameOfClass);
     const messageIndex = this.state.messages.indexOf(message)
     let newMessages = this.state.messages.slice(0)
     newMessages[messageIndex][nameOfClass] = !newMessages[messageIndex][nameOfClass]
     this.setState({messages: newMessages})
   }
 
-  async toggleRead (message){
-    await this.response({
+  toggleRead (message){
+     this.response({
       "messageIds": [message.id],
       "command": 'read',
       'read': !message.read
@@ -109,9 +125,8 @@ class App extends Component {
   }
 
 
-  async toggleStar (message){
-    // const body = JSON.stringify()
-    await this.response({
+   toggleStar (message){
+    this.response({
       "messageIds": [message.id],
       "command": 'star',
       'star': !message.starred
@@ -123,8 +138,10 @@ class App extends Component {
     event.stopPropagation()
     let newMessages = this.state.messages.slice(0)
     return newMessages.map(e => {
-      e.read = true
-      return this.setState({messages: newMessages})
+      if (e.selected){
+        e.read = true
+        return this.setState({messages: newMessages})
+      }
     })
   }
 
@@ -132,8 +149,10 @@ class App extends Component {
     event.stopPropagation()
     let newMessages = this.state.messages.slice(0)
     return newMessages.map(e => {
-      e.read = false
-      return this.setState({messages: newMessages})
+      if (e.selected){
+        e.read = false
+        return this.setState({messages: newMessages})
+      }
     })
   }
 
@@ -153,12 +172,33 @@ class App extends Component {
     })
   }
 
+  composeMessage = () => {
+    if (clicker === true) {
+      this.setState({visibility: 'block'})
+      clicker = false
+    }else{
+      this.setState({visibility: 'none'})
+      clicker = true
+    }
+  }
+
+  getSubject = (event) => {
+    let subject = event.target.value
+    this.setState({subjectContent: subject})
+  }
+
+  getMessage = (event) => {
+    let theMessage = event.target.value
+    this.setState({messageContent: theMessage})
+  }
+
   render() {
     return (
       <div className="App">
         <Navbar />
         <div className= "container">
-          <Toolbar messages={this.state.messages} keepLabel = {this.keepLabel} response = {this.response} alterUnread = {this.alterUnread} checkAll = {this.checkAll} deleteEmail = {this.deleteEmail} markRead = {this.markRead} markNew = {this.markNew} applyLabel = {this.applyLabel} removeLabel = {this.removeLabel}/>
+          <Toolbar getMessage= {this.getMessage} getSubject= {this.getSubject} composeMessage= {this.composeMessage} messages={this.state.messages} noLabel= {this.noLabel} keepLabel = {this.keepLabel} response = {this.response} alterUnread = {this.alterUnread} checkAll = {this.checkAll} deleteEmail = {this.deleteEmail} markRead = {this.markRead} markNew = {this.markNew} applyLabel = {this.applyLabel} removeLabel = {this.removeLabel}/>
+          <Compose subject= {this.state.subjectContent} theMessage= {this.state.messageContent} response= {this.response} getMessage= {this.getMessage} getSubject= {this.getSubject} visibility={this.state.visibility}/>
           <MessagesList messages={this.state.messages} toggleRead= {this.toggleRead.bind(this)} toggleStar = {this.toggleStar.bind(this)} toggleClass= {this.toggleClass} response = {this.response}/>
         </div>
 

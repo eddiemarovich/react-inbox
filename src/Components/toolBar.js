@@ -10,7 +10,9 @@ const Toolbar = ({
   deleteEmail,
   message,
   response,
-  keepLabel
+  keepLabel,
+  noLabel,
+  composeMessage
 }) => {
 
   const alterUnread = () => {
@@ -31,7 +33,7 @@ const Toolbar = ({
           unread message{`${addS()}`}
         </p>
 
-        <a className="btn btn-danger">
+        <a className="btn btn-danger" onClick = {(event) => {composeMessage()}}>
           <i className="fa fa-plus"></i>
         </a>
 
@@ -54,7 +56,7 @@ const Toolbar = ({
           <option value="gschool">gschool</option>
         </select>
 
-        <select className="form-control label-select" onChange ={(event) => {removeLabel(event.target.value)}}>
+        <select className="form-control label-select" onChange ={(event) => {noLabel(messages, event)}}>
           <option>Remove label</option>
           <option value="dev">dev</option>
           <option value="personal">personal</option>
