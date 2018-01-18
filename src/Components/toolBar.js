@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
 const Toolbar = ({
   messages,
@@ -12,17 +13,25 @@ const Toolbar = ({
   response,
   keepLabel,
   noLabel,
-  composeMessage
+  composeMessage,
+  visibility,
+  toggleCompose
 }) => {
 
   const alterUnread = () => {
     const newArr = messages.filter(e => !e.read)
     return newArr.length
   }
+
   const addS = () => {
     const newArr = messages.filter(e => !e.read)
     return newArr.length > 1 ? 's' : ''
   }
+
+  toggleCompose = () => {
+    return visibility === 'none' ? '/compose' : '/'
+  }
+
 
 
   return (
@@ -33,9 +42,9 @@ const Toolbar = ({
           unread message{`${addS()}`}
         </p>
 
-        <a className="btn btn-danger" onClick = {(event) => {composeMessage()}}>
+        <Link to= {`${toggleCompose()}`} className="btn btn-danger" onClick = {(event) => {composeMessage()}}>
           <i className="fa fa-plus"></i>
-        </a>
+        </Link>
 
         <button className="btn btn-default" onClick ={(event) => {checkAll(event, messages, 'selected')}}>
           <i className="fa fa-check-square-o"></i>

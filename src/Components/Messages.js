@@ -1,13 +1,14 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-const Message = ({message, toggleClass, response, toggleStar, toggleRead}) => {
+const Message = ({message, toggleClass, response, toggleStar, toggleRead, toggleId}) => {
 
   const readClass = message.read ? 'read' : 'unread'
   const starClass = message.starred ? 'star fa fa-star' : 'star fa fa-star-o'
   const boxClass = message.selected ? 'selected' : ''
 
   return (
-    <div className= {`row message ${readClass} ${boxClass}`} onClick= {(event) => {toggleRead(message)}}>
+    <Link to={`/${message.id}`} className= {`row message ${readClass} ${boxClass}`} onClick= {(event) => {toggleRead(message)}}>
       <div className="col-xs-1">
         <div className="row">
           <div className={`col-xs-2 `} >
@@ -26,7 +27,7 @@ const Message = ({message, toggleClass, response, toggleStar, toggleRead}) => {
           {message.subject}
         </a>
       </div>
-    </div>
+    </Link>
 
   )
 }

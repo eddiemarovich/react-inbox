@@ -4,6 +4,7 @@ import MessagesList from './Components/MessageList'
 import Toolbar from './Components/toolBar'
 import Navbar from './Components/navbar'
 import Compose from  './Components/Compose'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 let clicker = true
 
 class App extends Component {
@@ -192,17 +193,39 @@ class App extends Component {
     this.setState({messageContent: theMessage})
   }
 
+
+
   render() {
     return (
-      <div className="App">
-        <Navbar />
-        <div className= "container">
-          <Toolbar getMessage= {this.getMessage} getSubject= {this.getSubject} composeMessage= {this.composeMessage} messages={this.state.messages} noLabel= {this.noLabel} keepLabel = {this.keepLabel} response = {this.response} alterUnread = {this.alterUnread} checkAll = {this.checkAll} deleteEmail = {this.deleteEmail} markRead = {this.markRead} markNew = {this.markNew} applyLabel = {this.applyLabel} removeLabel = {this.removeLabel}/>
-          <Compose subject= {this.state.subjectContent} theMessage= {this.state.messageContent} response= {this.response} getMessage= {this.getMessage} getSubject= {this.getSubject} visibility={this.state.visibility}/>
-          <MessagesList messages={this.state.messages} toggleRead= {this.toggleRead.bind(this)} toggleStar = {this.toggleStar.bind(this)} toggleClass= {this.toggleClass} response = {this.response}/>
-        </div>
+      <Router>
+        <div className="App">
+          <Navbar />
+          <div className= "container">
+            <Route exact path='/' render={() => (
+              <div>
+                <Toolbar getMessage= {this.getMessage} getSubject= {this.getSubject} composeMessage= {this.composeMessage} messages={this.state.messages} noLabel= {this.noLabel} keepLabel = {this.keepLabel} visibility={this.state.visibility} response = {this.response} alterUnread = {this.alterUnread} checkAll = {this.checkAll} deleteEmail = {this.deleteEmail} markRead = {this.markRead} markNew = {this.markNew} applyLabel = {this.applyLabel} removeLabel = {this.removeLabel}/>
+                {/* <Compose subject= {this.state.subjectContent} theMessage= {this.state.messageContent} response= {this.response} getMessage= {this.getMessage} getSubject= {this.getSubject} visibility={this.state.visibility}/> */}
+                <MessagesList messages={this.state.messages} toggleRead= {this.toggleRead.bind(this)} toggleStar = {this.toggleStar.bind(this)} toggleClass= {this.toggleClass} response = {this.response}/>
+              </div>
+            )}/>
+            <Route exact path='/compose' render={() => (
+              <div>
+                <Toolbar getMessage= {this.getMessage} getSubject= {this.getSubject} composeMessage= {this.composeMessage} messages={this.state.messages} noLabel= {this.noLabel} keepLabel = {this.keepLabel} response = {this.response} alterUnread = {this.alterUnread} checkAll = {this.checkAll} deleteEmail = {this.deleteEmail} markRead = {this.markRead} markNew = {this.markNew} applyLabel = {this.applyLabel} removeLabel = {this.removeLabel}/>
+                <Compose subject= {this.state.subjectContent} theMessage= {this.state.messageContent} response= {this.response} getMessage= {this.getMessage} getSubject= {this.getSubject} visibility={this.state.visibility}/>
+                <MessagesList messages={this.state.messages} toggleRead= {this.toggleRead.bind(this)} toggleStar = {this.toggleStar.bind(this)} toggleClass= {this.toggleClass} response = {this.response}/>
+              </div>
+            )}/>
+            <Route path='/messages/:id' render={() => (
+              <div>
+                <Toolbar getMessage= {this.getMessage} getSubject= {this.getSubject} composeMessage= {this.composeMessage} messages={this.state.messages} noLabel= {this.noLabel} keepLabel = {this.keepLabel} response = {this.response} alterUnread = {this.alterUnread} checkAll = {this.checkAll} deleteEmail = {this.deleteEmail} markRead = {this.markRead} markNew = {this.markNew} applyLabel = {this.applyLabel} removeLabel = {this.removeLabel}/>
+                <Compose subject= {this.state.subjectContent} theMessage= {this.state.messageContent} response= {this.response} getMessage= {this.getMessage} getSubject= {this.getSubject} visibility={this.state.visibility}/>
+                <MessagesList messages={this.state.messages} toggleRead= {this.toggleRead.bind(this)} toggleStar = {this.toggleStar.bind(this)} toggleClass= {this.toggleClass} response = {this.response}/>
+              </div>
+            )}/>
+          </div>
 
-      </div>
+        </div>
+      </Router>
     )
   }
 }
