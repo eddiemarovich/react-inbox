@@ -4,8 +4,10 @@ import MessagesList from './Components/MessageList'
 import Toolbar from './Components/toolBar'
 import Navbar from './Components/navbar'
 import Compose from  './Components/Compose'
+import MessageBody from './Components/MessageBody'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 let clicker = true
+let messageBody = true
 
 class App extends Component {
   constructor(props){
@@ -14,14 +16,16 @@ class App extends Component {
       messages: [],
       visibility: 'none',
       subjectContent: '',
-      messageContent: ''
+      messageContent: '',
+      messageVisibility: 'none',
+      bigBod: {}
     }
   }
 
   async componentDidMount() {
     const response = await fetch( 'http://localhost:8082/api/messages' )
     const json = await response.json()
-    // console.log(json._embedded.messages);
+    console.log(json._embedded.messages);
     this.setState({messages: json._embedded.messages})
   }
 
@@ -34,6 +38,17 @@ class App extends Component {
         'Accept': 'application/json',
       }
     })
+  }
+
+    findDatBod = async (id) => {
+    const response = await fetch (`http://localhost:8082/api/messages/${id}`)
+    const json = await response.json()
+    const bigBoiBod = {
+      id: json.id,
+      body: json.body
+    }
+    console.log(json.body);
+    this.setState({bigBod: bigBoiBod})
   }
 
   alterUnread = (message) => {
@@ -117,12 +132,15 @@ class App extends Component {
   }
 
   toggleRead (message){
+    console.log("toggleRead: ", message);
      this.response({
       "messageIds": [message.id],
       "command": 'read',
       'read': !message.read
     }, 'PATCH')
     this.toggleClass(message, 'read')
+    console.log('bodId: ', message.id);
+    this.findDatBod(message.id)
   }
 
 
@@ -183,6 +201,16 @@ class App extends Component {
     }
   }
 
+  toggleBody = () => {
+    if (messageBody === true){
+      this.setState({ messageVisibility: 'block'})
+      messageBody = false
+    }else{
+      this.setState({messageVisibility: 'none'})
+      messageBody = true
+    }
+  }
+
   getSubject = (event) => {
     let subject = event.target.value
     this.setState({subjectContent: subject})
@@ -190,6 +218,7 @@ class App extends Component {
 
   getMessage = (event) => {
     let theMessage = event.target.value
+    console.log(theMessage);
     this.setState({messageContent: theMessage})
   }
 
@@ -204,22 +233,21 @@ class App extends Component {
             <Route exact path='/' render={() => (
               <div>
                 <Toolbar getMessage= {this.getMessage} getSubject= {this.getSubject} composeMessage= {this.composeMessage} messages={this.state.messages} noLabel= {this.noLabel} keepLabel = {this.keepLabel} visibility={this.state.visibility} response = {this.response} alterUnread = {this.alterUnread} checkAll = {this.checkAll} deleteEmail = {this.deleteEmail} markRead = {this.markRead} markNew = {this.markNew} applyLabel = {this.applyLabel} removeLabel = {this.removeLabel}/>
-                {/* <Compose subject= {this.state.subjectContent} theMessage= {this.state.messageContent} response= {this.response} getMessage= {this.getMessage} getSubject= {this.getSubject} visibility={this.state.visibility}/> */}
-                <MessagesList messages={this.state.messages} toggleRead= {this.toggleRead.bind(this)} toggleStar = {this.toggleStar.bind(this)} toggleClass= {this.toggleClass} response = {this.response}/>
+                <MessagesList   messages={this.state.messages} toggleRead= {this.toggleRead.bind(this)} toggleStar = {this.toggleStar.bind(this)} toggleClass= {this.toggleClass} response = {this.response}/>
               </div>
             )}/>
             <Route exact path='/compose' render={() => (
               <div>
                 <Toolbar getMessage= {this.getMessage} getSubject= {this.getSubject} composeMessage= {this.composeMessage} messages={this.state.messages} noLabel= {this.noLabel} keepLabel = {this.keepLabel} response = {this.response} alterUnread = {this.alterUnread} checkAll = {this.checkAll} deleteEmail = {this.deleteEmail} markRead = {this.markRead} markNew = {this.markNew} applyLabel = {this.applyLabel} removeLabel = {this.removeLabel}/>
                 <Compose subject= {this.state.subjectContent} theMessage= {this.state.messageContent} response= {this.response} getMessage= {this.getMessage} getSubject= {this.getSubject} visibility={this.state.visibility}/>
-                <MessagesList messages={this.state.messages} toggleRead= {this.toggleRead.bind(this)} toggleStar = {this.toggleStar.bind(this)} toggleClass= {this.toggleClass} response = {this.response}/>
+                <MessagesList bigBod= {this.state.bigBod} findDatBod= {this.findDatBod}   messages={this.state.messages} toggleRead= {this.toggleRead.bind(this)} toggleStar = {this.toggleStar.bind(this)} toggleClass= {this.toggleClass} response = {this.response}/>
               </div>
             )}/>
             <Route path='/messages/:id' render={() => (
               <div>
                 <Toolbar getMessage= {this.getMessage} getSubject= {this.getSubject} composeMessage= {this.composeMessage} messages={this.state.messages} noLabel= {this.noLabel} keepLabel = {this.keepLabel} response = {this.response} alterUnread = {this.alterUnread} checkAll = {this.checkAll} deleteEmail = {this.deleteEmail} markRead = {this.markRead} markNew = {this.markNew} applyLabel = {this.applyLabel} removeLabel = {this.removeLabel}/>
-                <Compose subject= {this.state.subjectContent} theMessage= {this.state.messageContent} response= {this.response} getMessage= {this.getMessage} getSubject= {this.getSubject} visibility={this.state.visibility}/>
-                <MessagesList messages={this.state.messages} toggleRead= {this.toggleRead.bind(this)} toggleStar = {this.toggleStar.bind(this)} toggleClass= {this.toggleClass} response = {this.response}/>
+                {/* <Compose subject= {this.state.subjectContent} theMessage= {this.state.messageContent} response= {this.response} getMessage= {this.getMessage} getSubject= {this.getSubject} visibility={this.state.visibility}/> */}
+                <MessagesList bigBod= {this.state.bigBod} findDatBod= {this.findDatBod} toggleBody= {this.toggleBody} messages={this.state.messages} toggleRead= {this.toggleRead.bind(this)} toggleStar = {this.toggleStar.bind(this)} toggleClass= {this.toggleClass} response = {this.response}/>
               </div>
             )}/>
           </div>

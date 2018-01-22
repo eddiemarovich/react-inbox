@@ -1,11 +1,11 @@
 import React from 'react'
 
-const Compose = ({response, getSubject, getMessage, visibility, theMessage, subject}) => {
+const Compose = ({response, getSubject, getMessage, visibility, theMessage, subject, toggleCompose}) => {
 
   let style = ''
   visibility === 'block' ? style = 'block' : style = 'none'
 
-
+  toggleCompose ==='/compose' ? visibility = 'block' : visibility = 'none'
 
   return (
     <div style={{  display: `${style}`}}>

@@ -15,7 +15,8 @@ const Toolbar = ({
   noLabel,
   composeMessage,
   visibility,
-  toggleCompose
+  messageVisibility,
+  bigBod
 }) => {
 
   const alterUnread = () => {
@@ -27,12 +28,10 @@ const Toolbar = ({
     const newArr = messages.filter(e => !e.read)
     return newArr.length > 1 ? 's' : ''
   }
+  console.log('toggling compose');
+  const toggleCompose =  visibility === 'none' ? '/compose' : '/'
 
-  toggleCompose = () => {
-    return visibility === 'none' ? '/compose' : '/'
-  }
-
-
+  
 
   return (
     <div className="row toolbar">
@@ -42,7 +41,7 @@ const Toolbar = ({
           unread message{`${addS()}`}
         </p>
 
-        <Link to= {`${toggleCompose()}`} className="btn btn-danger" onClick = {(event) => {composeMessage()}}>
+        <Link to= {`${toggleCompose}`}  className="btn btn-danger" onClick = {(event) => {composeMessage()}}>
           <i className="fa fa-plus"></i>
         </Link>
 
